@@ -9,7 +9,11 @@ import { ChecklistStore } from '../store/checklist.store';
   template: `
   <h2>B Component (ngrx/component-store)</h2>
   <div *ngFor="let task of (tasks$ | async);let i = index">
-      <span style="margin-right:4px">{{task.id}} - {{task.name}}</span>
+      <span *ngIf="!task.isEditable" style="margin-right:4px">{{task.id}} - {{task.name}}</span>
+
+      <span *ngIf="task.isEditable"><input/></span>
+      
+      <button style="margin-right:4px" (click)="edit(i)">edit</button>
       <button (click)="deleteTask(i)">delete</button>
     </div>
     <input type="text" [formControl]="control"/>
@@ -37,6 +41,10 @@ export class BComponent implements OnInit {
     if (!this.control.value) return;
     this._store.addTask(this.control.value);
     this.control.reset();
+  }
+
+  public edit(index: number): void {
+    this._store.toggleEditable(index);
   }
 
   public deleteTask(index: number): void {

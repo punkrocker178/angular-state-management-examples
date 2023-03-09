@@ -40,4 +40,18 @@ export class ChecklistStore extends ComponentStore<CheckList> {
       catchError(() => EMPTY)
     );
   });
+
+  readonly toggleEditable = this.effect((id$: Observable<number>) => {
+    return id$.pipe(
+      tap((id: number) => {
+        this._updateTaskEditable(id);
+      })
+    );
+  });
+
+  private readonly _updateTaskEditable = this.updater((state, id: number) => {
+    const task = state.tasks.find((task) => task.id === id + 1);
+    task.isEditable = !task.isEditable;
+    return state;
+  });
 }
